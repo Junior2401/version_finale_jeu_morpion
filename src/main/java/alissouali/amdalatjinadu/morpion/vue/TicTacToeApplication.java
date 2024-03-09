@@ -34,14 +34,14 @@ public class TicTacToeApplication extends Application {
     private Label message = new Label("");
     private Button restartButton = new Button("Restart");
     private GridPane gameButtonGridePane;
-
+    private BorderPane root;
 
 
 
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         GridPane gridPane = new GridPane();
         HBox scoreList = new HBox(scoreXLabel, scoreOLabel, scoreEmptyLabel);
         restartButton.setStyle("-fx-padding: 20px;");
@@ -87,6 +87,7 @@ public class TicTacToeApplication extends Application {
 
 
         primaryStage.show();
+        this.initFooter();
 
     }
 
@@ -115,6 +116,9 @@ public class TicTacToeApplication extends Application {
 
 
     public void updateGameSquareGride() {
+
+
+        scoreEmptyLabel.setVisible(false);
         for (int i=0; i< model.getBoardWidth(); i++){
             for (int j=0; j< model.getBoardHeight(); j++){
                 if(model.getWinningSquare(i,j).get()){
@@ -123,8 +127,9 @@ public class TicTacToeApplication extends Application {
                 }
             }
         }
-
         updateGameResume();
+        scoreXLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
+        scoreOLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
         this.gride.setDisable(true);
 
     }
@@ -135,8 +140,12 @@ public class TicTacToeApplication extends Application {
      */
 
     private void resetGame(){
+        scoreEmptyLabel.setVisible(true);
         model.restart();
-        this.gameButtonGridePane.setDisable(false);
+        this.gameButtonGridePane= createGameSquareGride(model.getBoardWidth(), model.getBoardHeight());
+        root.setCenter(this.gameButtonGridePane);
+
+        /*this.gameButtonGridePane.setDisable(false);
         for(TicTacToeSquare btn : listGameButton){
             btn.setText("");
             btn.setStyle("");
@@ -145,13 +154,17 @@ public class TicTacToeApplication extends Application {
                         btn.setStyle("");
                     }
             );
-        }
+        }*/
+
+        this.initFooter();
+    }
+
+    private void initFooter(){
         scoreXLabel.setText(0+" Case cocher par X");
-        scoreXLabel.setStyle("-fx-background-color: green; -fx-padding: 10px;");
+        scoreXLabel.setStyle("-fx-background-color: cyan; -fx-padding: 10px;");
         scoreOLabel.setText(0+" Case cocher par O");
         scoreOLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
         scoreEmptyLabel.setText((model.getBoardWidth()*model.getBoardHeight())+" Cases libres");
-
 
     }
 
@@ -160,9 +173,16 @@ public class TicTacToeApplication extends Application {
         int scoreX = model.getScore(Owner.FIRST).intValue();
         int scoreO = model.getScore(Owner.SECOND).intValue();
         scoreXLabel.setText(scoreX+" Case cocher par X");
-        scoreXLabel.setStyle("-fx-background-color: green; -fx-padding: 10px;");
-        scoreOLabel.setText(scoreO+" Case cocher par X");
-        scoreOLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
+        scoreOLabel.setText(scoreO+" Case cocher par O");
+        if(model.turnProperty().get()==Owner.FIRST){
+            scoreXLabel.setStyle("-fx-background-color: cyan; -fx-padding: 10px;");
+            scoreOLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
+        }else{
+            scoreXLabel.setStyle("-fx-background-color: red; -fx-padding: 10px;");
+            scoreOLabel.setStyle("-fx-background-color: cyan; -fx-padding: 10px;");
+        }
+        System.out.println(model.turnProperty().get());
+
         scoreEmptyLabel.setText(((model.getBoardWidth()*model.getBoardHeight())-(scoreX+scoreO))+" Cases libres");
         message.setText(model.getEndOfGameMessage().getValue());
     }
@@ -175,8 +195,6 @@ public class TicTacToeApplication extends Application {
     }
 
     public static void main(String[] args) {
-        /*Application app = new  TicTacToeApplication ();
-        app.start(app);*/
         launch(args);
     }
 }

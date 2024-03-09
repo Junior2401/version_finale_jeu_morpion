@@ -51,8 +51,10 @@ public class TicTacToeSquare extends Button {
                     if(model.legalMove(this.line, this.col).get()){
                         this.setText(model.getCurrentPlayerName());
                         ownerProperty.set(model.turnProperty().get());
-                        this.parent.updateGameResume();
                         model.play(line, col);
+
+                        model.nextPlayer();
+                        this.parent.updateGameResume();
 
                         //Si le jeu est terminé ?
                         if(model.gameOver().get()){

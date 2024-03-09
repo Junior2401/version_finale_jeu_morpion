@@ -188,7 +188,6 @@ public class TicTacToeModel {
             if(this.legalMove(row, column).get()){
                 this.board[row][column].set(turn.get());
                 this.counter++;
-                this.nextPlayer();
                 this.gameOver();
             }
         }
